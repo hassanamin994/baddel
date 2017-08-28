@@ -1,0 +1,18 @@
+{
+  "name": "baddel",
+  "version": "1.0.0",
+  "description": "An application that allows users to trade items they dont need with ones they need",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Hassan Amin",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.17.2",
+    "express": "^4.15.4",
+    "mongoose": "^4.11.9",
+    "passport": "^0.4.0",
+    "passport-local": "^1.0.0"
+  }
+}
