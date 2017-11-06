@@ -3,9 +3,9 @@ var Schema = mongoose.Schema;
 
 var userSchema = new Schema({
 
-  username: {type: String, required: 'Please provide a username'},
-
-
+  username: {type: String},
+  profile: {facebook: {type: String}, twitter: {type: String}},
+  phone_number: String,
 
 })
 
