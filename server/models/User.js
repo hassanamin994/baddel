@@ -18,7 +18,7 @@ var userSchema = new Schema({
 })
 
 // On save Hook, encrypt password
-userSchema.pre('save', (next) => {
+userSchema.pre('save', function (next) {
   const user = this;
   bcrypt.genSalt(10, (err, salt) => {
     if(err) return next(err);
@@ -30,5 +30,12 @@ userSchema.pre('save', (next) => {
     });
   });
 });
+
+userSchema.methods.comparePassword = function (candidatePassword, callback) {
+  bcrypt.compare(candidatePassword, this.password, (err, isMatch) => {
+    if(err) return callback(err);
+    return callback(null, isMatch);
+  });
+}
 
 module.exports = mongoose.model('User', userSchema);

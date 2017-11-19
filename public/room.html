@@ -1,0 +1,55 @@
+<html>
+  <body>
+    <!--<div id="fb-root"></div>
+    <script>(function(d, s, id) {
+      var js, fjs = d.getElementsByTagName(s)[0];
+      if (d.getElementById(id)) return;
+      js = d.createElement(s); js.id = id;
+      js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.10&appId=310365132768828";
+      fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));</script>
+    
+    <div class="fb-login-button" data-max-rows="1" data-size="large" data-button-type="continue_with" data-show-faces="false" data-auto-logout-link="false" data-use-continue-as="false"></div>
+    -->
+
+    <h1 class="room-name"></h1>
+    <div id="messages">
+
+    </div>
+    <input type="text" id="message" > <button id="send">Send</button>
+    <script src="socket.io.js" ></script>
+    <script>
+      var socket = io();
+      var messageDiv = document.getElementById('messages');
+      var sendBtn = document.getElementById('send');
+
+      sendBtn.onclick = sendMessage;
+      const queryParams = getQueryParams();
+      socket.emit('joinRoom', queryParams);
+
+      socket.on('message', function(message) {
+        messageDiv.innerHTML += '<p> ' + message.name +': ' + message.text + '</p>';
+      });
+
+      function sendMessage(e) {
+        var messageInput = document.getElementById('message');
+        socket.emit('message', {name: queryParams.name, text: messageInput.value});
+        messageInput.value = '';
+      }
+
+      
+      function getQueryParams() {
+          var queryArray = window.location.search.substr(1).split('&');
+          var queryParams = {};
+
+          for(var i =0; i < queryArray.length; i++ ){
+              var keyValue = queryArray[i].split('=');
+              console.log(keyValue)
+              queryParams[keyValue[0]] = keyValue[1];
+          }
+
+          return queryParams;
+      }
+    </script>
+  </body>
+</html>

@@ -3,11 +3,21 @@ const User = require('../models/User');
 const validator = require('validator');
 const jwt = require('jwt-simple');
 const config = require('../config');
+const passport = require('passport');
+
+const authSignin = passport.authenticate('local', {session: false});
+
 
 const tokenForUser = (user) => {
     const timestamp = new Date().getTime();
     return jwt.encode({ sub: user.id, iat: timestamp}, config.secret);
 }
+
+router.post('/signin', authSignin, (req, res) => {
+
+    res.json({token: tokenForUser(req.user)});
+
+})
 
 router.post('/signup', (req, res, next) => {
     const email = req.body.email;
