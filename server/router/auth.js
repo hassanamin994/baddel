@@ -9,7 +9,7 @@ const superagent = require('superagent');
 
 const authSignin = passport.authenticate('local', {session: false});
 
-const FACEBOOK_GRAPH_URL = 'https://graph.facebook.com/me?fields=name,id,email'
+const FACEBOOK_GRAPH_URL = 'https://graph.facebook.com/me?fields=name,id,email';
 
 const tokenForUser = (user) => {
     const timestamp = new Date().getTime();
@@ -64,12 +64,11 @@ router.post('/facebook', (req, res) => {
             user = new User();
             user.name = userData.name;
             user.facebook_id = userData.id;
+            user.image = `http://graph.facebook.com/${userData.id}/picture?type=square`;
             if(userData.email) {
                 user.email = userData.email;
             }
             user.save((err, newUser) => {
-                console.log('signup')
-                console.log(err, t);
                 return res.json({token: tokenForUser(newUser)});
             })
         })

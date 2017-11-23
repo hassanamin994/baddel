@@ -13,7 +13,8 @@ var userSchema = new Schema({
     type: String,
   },
   name: String,
-  facebook_id: String
+  facebook_id: String,
+  image: String
 
 })
 
