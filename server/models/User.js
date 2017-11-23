@@ -8,12 +8,12 @@ var userSchema = new Schema({
     type: String,
     unique: true,
     lowercase: true,
-    required: 'Please enter your email.'
   },
   password: {
     type: String,
-    required: 'Enter a password'
-  }
+  },
+  name: String,
+  facebook_id: String
 
 })
 

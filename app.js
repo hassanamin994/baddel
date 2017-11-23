@@ -10,12 +10,13 @@ const passportService = require('./server/services/passport');
 const passport = require('passport');
 const config = require('./server/config/index');
 const routes = require('./server/router/index');
-
+const cors = require('cors');
 const io = require('socket.io')(server);
 var clientInfo = {};
 
 mongoose.connect(config.DB);
 
+app.use(cors());
 app.use(express.static(__dirname + 'public'));
 app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({extended: false}));
