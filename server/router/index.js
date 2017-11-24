@@ -29,7 +29,8 @@ router.use('*', (err, req, res, next) => {
             })
             break
     }
-    res.status(422).send(errors || 'Something went wrong');
+    console.log(err);
+    res.status(422).send(errors.length > 0 ? errors : 'Something went wrong');
     console.log(err)
 })
 
