@@ -14,7 +14,8 @@ var userSchema = new Schema({
   },
   name: String,
   facebook_id: String,
-  image: String
+  image: String,
+  phone: String
 
 })
 
