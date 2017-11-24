@@ -18,7 +18,7 @@ var userSchema = new Schema({
   image: String,
   phone: String
 
-})
+}, { timestamps: true })
 
 // On save Hook, encrypt password
 userSchema.pre('save', function (next) {
