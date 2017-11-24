@@ -11,8 +11,28 @@ var productSchema = new mongoose.Schema({
     user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
+    },
+    category: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Category',
+        required: 'Category field can not be empty'
     }
-}, { timestamps: true })
+}, { timestamps: true });
 
+
+// auto populate user and category fields
+function populateUser(next) {
+    this.populate('user');
+    next();
+}
+
+function populateCategory(next) {
+    this.populate('category');
+    next();
+}
+
+productSchema.pre('find', populateCategory, populateUser );
+productSchema.pre('findOne', populateCategory, populateUser);
+productSchema.pre('findAll', populateCategory, populateUser);
 
 module.exports = mongoose.model('Product', productSchema);

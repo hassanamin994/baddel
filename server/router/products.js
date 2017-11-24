@@ -3,6 +3,7 @@ const Product = require('../models/Product');
 const validator = require('validator');
 const passport = require('passport');
 const requireAuth = passport.authenticate('jwt', {session: false});
+const { MONGOOSE_VALIDATION_ERROR, UNAUTHORIZED } = require('../config/types');
 
 router.get('/', (req, res) => {
     const skip = req.query.skip || 0;
@@ -19,7 +20,7 @@ router.get('/', (req, res) => {
 });
 
 router.post('/', requireAuth, (req, res, next) => {
-    const { title, location, price, trade_with } = req.body;
+    const { title, location, price, trade_with, category } = req.body;
     console.log(req.user);
     const user = req.user;
     var product = new Product({
@@ -27,12 +28,13 @@ router.post('/', requireAuth, (req, res, next) => {
         location,
         price,
         trade_with,
-        user: user.id
+        user: user.id,
+        category
     });
 
     product.save((err, p) => {
         if(err) {
-            return next({type: 'MONGOOSE', payload: err});
+            return next({type: MONGOOSE_VALIDATION_ERROR, payload: err});
         }
 
         res.json(p);
@@ -42,27 +44,35 @@ router.post('/', requireAuth, (req, res, next) => {
 router.get('/:id', (req, res, next) => {
     const id = req.params.id;
     Product.findById(id)
-    .populate('user')
     .then(product => {
         res.json(product);
     })
     .catch(err => {
-        next({type: 'MONGOOSE', payload: err});
+        next(err);
     })
 });
 
-router.patch('/:id', (req, res, next) => {
+router.patch('/:id', requireAuth, (req, res, next) => {
     // collect attributes to be updated
-    const updateAttrs = {};
-    const body = req.body;
-    Object.keys(body).forEach(key => {
-        updateAttrs[key] = body[key];
-    });
+    const updateAttrs = req.body;
+
     // prevent updating user field
     delete updateAttrs['user'];
-    Product.findOneAndUpdate({_id: req.params.id}, updateAttrs, {new: true})
-    .then(product => {
-        return res.json(product);
+    Product.findById(req.params.id)
+    .then( product => {
+        // enable user to update only their products
+        console.log(product.user, req.user)
+        if(product.user !== req.user._id) {
+            return next({type: UNAUTHORIZED})
+        }
+        Object.keys(updateAttrs).forEach(key => {
+            product[key] = updateAttrs[key];
+        });
+
+        product.save((err, product) => {
+            if(err) return next(err);
+            return res.json(product);
+        });
     })
     .catch(err => {
         return next(err);
