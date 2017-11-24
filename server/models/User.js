@@ -11,6 +11,7 @@ var userSchema = new Schema({
   },
   password: {
     type: String,
+    select: false
   },
   name: String,
   facebook_id: String,

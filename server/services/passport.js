@@ -12,8 +12,10 @@ const localOptions = {
 };
 
 const localLogin = new LocalStrategy(localOptions, (email, password, done) => {
-    User.findOne({email: email}, (err, user) => {
-        if(err) return done(err);
+    User.findOne({email: email})
+    .select('+password') 
+    .then(user => {
+        console.log(user)
         if(!user) return done(null, false);
 
         // compare passwords!
@@ -23,7 +25,11 @@ const localLogin = new LocalStrategy(localOptions, (email, password, done) => {
             else return done(null, user);
         });
 
-    });
+    })
+    .catch(err => {
+        console.log(err)
+        return done(err);
+    })
 });
 
 
