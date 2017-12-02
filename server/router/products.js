@@ -6,8 +6,9 @@ const requireAuth = passport.authenticate('jwt', {session: false});
 const { MONGOOSE_VALIDATION_ERROR, UNAUTHORIZED } = require('../config/types');
 
 router.get('/', (req, res) => {
-    const skip = req.query.skip || 0;
-    const limit = req.query.limit || 10;
+    const page = req.query.page || 1;
+    const skip = page == 1 ? 0: page * 10;
+    const limit = 10; 
     Product.find()
     .skip(skip)
     .limit(limit)
