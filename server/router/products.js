@@ -6,12 +6,23 @@ const requireAuth = passport.authenticate('jwt', {session: false});
 const { MONGOOSE_VALIDATION_ERROR, UNAUTHORIZED } = require('../config/types');
 
 router.get('/', (req, res) => {
-    const page = req.query.page || 1;
-    const skip = page == 1 ? 0: page * 10;
+    const page = req.query.page || 1;    
+    const skip = page == 1 ? 0: (page-1) * 10;
     const limit = 10; 
-    Product.find()
+    
+    const { filter, value } = req.query; 
+    const searchQuery = {} ; 
+
+    console.log(searchQuery);
+    
+    if(filter && value) {
+        searchQuery[filter] = new RegExp(value,'i') ;
+    }
+
+    Product.find(searchQuery)
     .skip(skip)
     .limit(limit)
+    .sort([['createdAt', 1]])
     .then(products => {
         res.json(products);
     })
@@ -19,6 +30,7 @@ router.get('/', (req, res) => {
         next(err);
     })
 });
+
 
 router.post('/', requireAuth, (req, res, next) => {
     const { title, location, price, trade_with, category } = req.body;
