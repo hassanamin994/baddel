@@ -17,7 +17,7 @@ const tokenForUser = (user) => {
 
 router.post('/signin', authSignin, (req, res) => {
 
-    res.json({token: tokenForUser(req.user)});
+    res.json({ token: tokenForUser(req.user), user: req.user });
 
 })
 
@@ -39,7 +39,7 @@ router.post('/signup', (req, res, next) => {
         user.save((err) => {
             if(err) return next(err);
 
-            res.json({success: true, token: tokenForUser(user)});
+            res.json({ success: true, token: tokenForUser(user), user: user });
         })
     })
     .catch(err => next(err));

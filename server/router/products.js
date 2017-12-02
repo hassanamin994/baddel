@@ -61,16 +61,19 @@ router.patch('/:id', requireAuth, (req, res, next) => {
     Product.findById(req.params.id)
     .then( product => {
         // enable user to update only their products
-        console.log(product.user, req.user)
-        if(product.user !== req.user._id) {
+        console.log(typeof parseInt(product.user), typeof parseInt(req.user._id))
+        if(!req.user._id.equals(product.user)) {
+            console.log(product.user != req.user._id)
             return next({type: UNAUTHORIZED})
         }
         Object.keys(updateAttrs).forEach(key => {
             product[key] = updateAttrs[key];
+            console.log(key, updateAttrs[key])
         });
 
         product.save((err, product) => {
             if(err) return next(err);
+            console.log(product);
             return res.json(product);
         });
     })
