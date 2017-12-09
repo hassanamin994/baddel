@@ -2,23 +2,29 @@ const router = require('express').Router();
 const Product = require('../models/Product');
 const validator = require('validator');
 const passport = require('passport');
+const mongoose = require('mongoose');
 const requireAuth = passport.authenticate('jwt', {session: false});
 const { MONGOOSE_VALIDATION_ERROR, UNAUTHORIZED } = require('../config/types');
 
 router.get('/', (req, res) => {
-    const page = req.query.page || 1;    
+    const page = req.query.page || 1;   
+    // remove page from being a query filter 
+    delete req.query.page ;
+    
     const skip = page == 1 ? 0: (page-1) * 10;
     const limit = 10; 
     
-    const { filter, value } = req.query; 
+    const query = req.query; 
     const searchQuery = {} ; 
 
-    console.log(searchQuery);
-    
-    if(filter && value) {
-        searchQuery[filter] = new RegExp(value,'i') ;
-    }
+    Object.keys(query).forEach(key => {
+        if(key == 'category')
+            searchQuery[key] = mongoose.Types.ObjectId(query[key]);
+        else
+            searchQuery[key] = new RegExp(query[key],'i') ;
+    })
 
+    console.log(searchQuery)
     Product.find(searchQuery)
     .skip(skip)
     .limit(limit)
@@ -27,6 +33,7 @@ router.get('/', (req, res) => {
         res.json(products);
     })
     .catch(err => {
+        console.log(err)
         next(err);
     })
 });
