@@ -56,7 +56,7 @@ router.post('/facebook', (req, res) => {
         .then(user => {
             if(user) {
                 console.log('login')
-                return res.json({token: tokenForUser(user)});
+                return res.json({token: tokenForUser(user), user: user});
             }
 
             user = new User();
@@ -67,7 +67,7 @@ router.post('/facebook', (req, res) => {
                 user.email = userData.email;
             }
             user.save((err, newUser) => {
-                return res.json({token: tokenForUser(newUser)});
+                return res.json({token: tokenForUser(newUser), user: newUser});
             })
         })
         .catch(err => {
