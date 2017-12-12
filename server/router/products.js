@@ -12,7 +12,7 @@ router.get('/', (req, res) => {
     delete req.query.page ;
     
     const skip = page == 1 ? 0: (page-1) * 10;
-    const limit = 10; 
+    const limit = 100; 
     
     const query = req.query; 
     const searchQuery = {} ; 
