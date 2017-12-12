@@ -8,6 +8,7 @@ var productSchema = new mongoose.Schema({
     location: String,
     trade_with: [{type: String}],
     price: String,
+    images: [{type: String}],
     user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'

@@ -5,6 +5,7 @@ const passport = require('passport');
 const mongoose = require('mongoose');
 const requireAuth = passport.authenticate('jwt', {session: false});
 const { MONGOOSE_VALIDATION_ERROR, UNAUTHORIZED } = require('../config/types');
+const { uploadImages } = require('../middlewares/imageUpload');
 
 router.get('/', (req, res) => {
     const page = req.query.page || 1;   
@@ -39,14 +40,14 @@ router.get('/', (req, res) => {
 });
 
 
-router.post('/', requireAuth, (req, res, next) => {
-    const { title, location, price, trade_with, category } = req.body;
-    console.log(req.user);
+router.post('/', requireAuth, uploadImages, (req, res, next) => {
+    const { title, location, price, trade_with, category, images } = req.body;
     const user = req.user;
     var product = new Product({
         title,
         location,
         price,
+        images,
         trade_with,
         user: user.id,
         category

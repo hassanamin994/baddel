@@ -1,8 +1,10 @@
 const path = require('path');
+const fs = require('fs');
 const AllowedImageExtensions = ['png', 'jpg', 'jpeg'];
 
 
 const saveBase64File = (base64code, type, dest, callback) => {
+    callback = callback || function () {}
     return new Promise((resolve, reject) => {
         var errors = [];
         var matches = base64code.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/) || [];
@@ -22,26 +24,26 @@ const saveBase64File = (base64code, type, dest, callback) => {
                     }
 
                     if(errors.length > 0) {
-                        callback(errors);
-                        return reject(errors);
+                        reject(errors);
+                        return callback(errors);
                     }
 
                     data = matches[2];
-                    saveImage(data, e, 'images')
+                    saveImage(data, e, dest)
                     .then(imagePath => {
-                        callback(null, imagePath);
-                        return resolve(imagePath);
+                        resolve(imagePath);
+                        return callback(null, imagePath);
                     })
                     .catch(err => {
-                        callback(err); 
-                        return reject(err);
+                        reject(err);
+                        return callback(err); 
                     });
 
                     break;
                 default: 
                     errors.push('Unhandeled file type');
-                    callback(errors);
-                    return reject(errors);
+                    reject(errors);
+                    return callback(errors);
             }
             
         }
@@ -49,21 +51,22 @@ const saveBase64File = (base64code, type, dest, callback) => {
 }
 
 const saveImage = (data, extension, dest, callback) => {
+    callback = callback || function () {}
     return new Promise((resolve, reject) => {
         var imageBuffer = new Buffer(data, 'base64');
-        console.log(data);
-        var imageName = "pic" + Math.floor(Math.random()*(100000)) + "_" + (new Date()) +'.' + extension;
+        // console.log(data);
+        var imageName = "pic" + Math.floor(Math.random()*(100000)) + "_" + Date.now() +'.' + extension;
         const filePath = path.join(__dirname, '../../public', dest);
         const fullImagePath = filePath + '/' + imageName;
         fs.writeFile(fullImagePath, imageBuffer, (err) => {
 
             if(err) {
-                callback(err);
-                return reject(err);
+                reject(err);
+                return callback(err);
             }
 
-            callback(null, fullImagePath );
-            return resolve(fullImagePath)
+            resolve(`/${dest}/${imageName}`)
+            return callback(null, `/images/${imageName}` );
 
         });
     });
