@@ -8,12 +8,13 @@ const server = http.Server(app);
 
 const passportService = require('./server/services/passport');
 const passport = require('passport');
-const config = require('./server/config/index');
 const routes = require('./server/router/index');
 const cors = require('cors');
-const io = require('socket.io')(server);
+// const io = require('socket.io')(server);
 var clientInfo = {};
-const dotenv = require('dotenv');
+
+require('dotenv').config();
+const config = require('./server/config/index');
 mongoose.connect(config.DB);
 
 app.use(cors());
@@ -60,7 +61,7 @@ app.use('/api', routes);
 const PORT = process.env.PORT || 3000 ;
 server.listen(PORT, () => {
   Object.keys(process.env).forEach(key => {
-    if(process.env[key].indexOf('BADDELLY') > -1) {
+    if(key.indexOf('BADDELLY') > -1) {
       console.log(key, process.env[key]);
     }
   });
