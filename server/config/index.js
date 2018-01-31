@@ -1,3 +1,3 @@
 module.exports = {
-  DB: 'mongodb://localhost:27017/baddel'
+  DB: process.env.BADDELLY_MONGO_URL
 }
