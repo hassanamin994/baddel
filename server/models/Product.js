@@ -5,11 +5,12 @@ var productSchema = new mongoose.Schema({
         type: String,
         required: 'Pleaase provide a name for the product'
     },
+    description: String,
     location: String,
     trade_with: [{type: String}],
     price: String,
     images: [{type: String}],
-    user: {
+    owner: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
     },

@@ -49,7 +49,7 @@ router.post('/', requireAuth, uploadImages, (req, res, next) => {
         price,
         images,
         trade_with,
-        user: user.id,
+        owner: user.id,
         category
     });
 
@@ -78,12 +78,11 @@ router.patch('/:id', requireAuth, (req, res, next) => {
     const updateAttrs = req.body;
 
     // prevent updating user field
-    delete updateAttrs['user'];
+    delete updateAttrs['owner'];
     Product.findById(req.params.id)
     .then( product => {
         // enable user to update only their products
-        console.log(typeof parseInt(product.user), typeof parseInt(req.user._id))
-        if(!req.user._id.equals(product.user)) {
+        if(!req.user._id.equals(product.owner)) {
             console.log(product.user != req.user._id)
             return next({type: UNAUTHORIZED})
         }

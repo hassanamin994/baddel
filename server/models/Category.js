@@ -7,6 +7,12 @@ const categorySchema = new Schema({
         type: String,
         required: 'Name field is required'
     },
+    icon: String,
+    parentId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Category',
+        default: null
+    }
 }, { timestamps: true });
 
 
