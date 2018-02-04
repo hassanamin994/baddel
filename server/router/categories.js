@@ -9,9 +9,11 @@ router.get('/', (req, res, next) => {
 });
 
 router.post('/', (req, res, next) => {
-    const name = req.body.name;
+    const { name, icon, parentId} = req.body.name;
     var category = new Category({
-        name
+        name,
+        icon,
+        parentId
     });
     category.save((err, c) => {
         if(err) {
