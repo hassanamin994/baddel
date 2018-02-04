@@ -9,7 +9,7 @@ router.get('/', (req, res, next) => {
 });
 
 router.post('/', (req, res, next) => {
-    const { name, icon, parentId} = req.body.name;
+    const { name, icon, parentId } = req.body;
     var category = new Category({
         name,
         icon,
