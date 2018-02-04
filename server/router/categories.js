@@ -23,5 +23,14 @@ router.post('/', (req, res, next) => {
     })
 });
 
+router.delete('/:id', (req, res) => {
+    const id = req.param.id;
+    Category.findByIdAndRemove(id, (err, result) => {
+        if (err) {
+            return res.status(422).end('error removing category')
+        };
+        return res.json({success: true});
+    })
+});
 
 module.exports = router;
