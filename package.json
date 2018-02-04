@@ -4,7 +4,7 @@
   "description": "An application that allows users to trade items they dont need with ones they need",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "node ./node_modules/mocha/bin/mocha --recursive -t 10000",
     "start": "node index.js"
   },
   "author": "Hassan Amin",
@@ -25,5 +25,10 @@
     "passport-local": "^1.0.0",
     "socket.io": "^2.0.4",
     "validator": "^9.1.1"
+  },
+  "devDependencies": {
+    "chai": "^4.1.2",
+    "mocha": "^5.0.0",
+    "request": "^2.83.0"
   }
 }
