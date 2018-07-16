@@ -1,6 +1,6 @@
-const path = require('path');
-const fs = require('fs');
-const AllowedImageExtensions = ['png', 'jpg', 'jpeg'];
+const AWS = require('aws-sdk');
+const s3 = new AWS.S3();
+const bucketName = process.env.S3_BUCKET_NAME;
 
 
 const saveBase64File = (base64code, type, dest, callback) => {
@@ -14,6 +14,8 @@ const saveBase64File = (base64code, type, dest, callback) => {
         } else {
             var ext = matches[1];
             var e = ext.split('/')[1];
+            console.log('EXT: ' + e)
+            console.log(e !== "png" || e !== "jpg")
 
             switch(type) {
                 case 'image':
@@ -28,10 +30,10 @@ const saveBase64File = (base64code, type, dest, callback) => {
 
                     data = matches[2];
                     saveImage(data, e, dest)
-                        .then(imagePath => {
-                            resolve(imagePath);
-                            return callback(null, imagePath);
-                        })
+                    .then(imagePath => {
+                        resolve(imagePath);
+                        return callback(null, imagePath);
+                    })
                     .catch(err => {
                         reject(err);
                         return callback(err); 
@@ -48,39 +50,21 @@ const saveBase64File = (base64code, type, dest, callback) => {
     })
 }
 
-const saveImage = (data, extension, dest, callback) => {
-    callback = callback || function () {}
-    return new Promise((resolve, reject) => {
-        var imageBuffer = new Buffer(data, 'base64');
-        // console.log(data);
-        var imageName = "pic" + Math.floor(Math.random()*(100000)) + "_" + Date.now() +'.' + extension;
-        const filePath = path.join(__dirname, '../../public', dest);
-        const fullImagePath = filePath + '/' + imageName;
-        fs.writeFile(fullImagePath, imageBuffer, (err) => {
+// const putObject = (filename, data, callback) => {
+//     callback = callback || function () {}
+//     let options = {
+//         Bucket: bucketName,
+//         Key: filename,
+//         Body: data
+//     };
 
-            if(err) {
-                reject(err);
-                return callback(err);
-            }
-
-            resolve(`/${dest}/${imageName}`)
-            return callback(null, `/images/${imageName}` );
-
-        });
-    });
-
-}
-
-
-
-
-
-
-
-
-
-
-module.exports = {
-    saveBase64File,
-
-};
+//     return new Promise((resolve, reject) => {
+//         s3.putObject(options, (err, data ) => {
+//             if (err) {
+//                 reject(err);
+//                 return callback(err);
+//             }
+            
+//         }); 
+//     })  
+// }

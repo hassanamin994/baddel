@@ -14,17 +14,16 @@ const uploadImages = (req, res, next) => {
         if(image.match(regex)) {
             function i(cb) {
                 saveBase64File(image, 'image', 'images')
-                .then(path => cb(null, path))
-                .catch(err => cb(err))
+                    .then(path => cb(null, path))
+                    .catch(err => cb(err))
             }
             imageFunctionList.push(i);
         }
     });
-    console.log(imageFunctionList.length)
 
     async.parallel(async.reflectAll(imageFunctionList), (err, paths ) => {
         if(!err)
-            req.body.images = paths.map(image => req.protocol + "://" + req.headers.host + image.value);
+            req.body.images = paths.map(image => image.value);
         next();
     });
 

@@ -5,6 +5,8 @@ const mongoose = require('mongoose');
 const morgan = require('morgan');
 const http = require('http');
 const server = http.Server(app);
+const AWS = require('aws-sdk');
+const s3 = new AWS.S3()
 
 const passportService = require('./server/services/passport');
 const passport = require('passport');
@@ -15,7 +17,15 @@ var clientInfo = {};
 
 require('dotenv').config();
 const config = require('./server/config/index');
-mongoose.connect(config.DB);
+
+mongoose.connect(config.DB, (err) => {
+  if (err) {
+    console.log('Error connecting with mongoDB' + err);
+    return process.exit(1);
+  }
+
+  console.log('Connection Successfull!')
+});
 
 app.use(cors());
 app.use(express.static(__dirname + '/public'));
@@ -26,6 +36,11 @@ app.use(passport.initialize());
 
 app.use('/api', routes);
 
+// const params = {Bucket: 'baddel', Key: 'test.txt', Body: 'test body'};
+
+// s3.putObject(params, (err, data ) => {
+//   console.log(err, data);
+// })
 // io.on('connection', (socket) => {
 //   console.log('User connected');
 
@@ -55,6 +70,8 @@ app.use('/api', routes);
 //   });
 
 // });
+
+
 
 
 // server setup

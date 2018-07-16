@@ -4,13 +4,14 @@
   "description": "An application that allows users to trade items they dont need with ones they need",
   "main": "index.js",
   "scripts": {
-    "test": "node ./node_modules/mocha/bin/mocha --recursive -t 10000",
+    "test": "node ./node_modules/mocha/bin/mocha --recursive -t 10000 --watch",
     "start": "node index.js"
   },
   "author": "Hassan Amin",
   "license": "ISC",
   "dependencies": {
     "async": "^2.6.0",
+    "aws-sdk": "^2.190.0",
     "axios": "^0.17.1",
     "bcrypt-nodejs": "0.0.3",
     "body-parser": "^1.17.2",
